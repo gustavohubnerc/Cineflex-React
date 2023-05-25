@@ -27,26 +27,27 @@ export default function HomePage() {
 
     return (
         <PageContainer>
+            Selecione o filme
+            <ListContainer>
+
             {isLoading ? (
                 <LoadingContainer>
                     <ReactLoading type="spinningBubbles" color="#C3CFD9" height={100} width={100}/>
                 </LoadingContainer>
             ) : (
-            <>
-                Selecione o filme
-                <ListContainer>
-                    {movies.map(movie => (
-                        <Link key={movie.id} to={`/sessoes/${movie.id}`} >
+            <>                
+                {movies.map(movie => (                           
+                    <Link key={movie.id} to={`/sessoes/${movie.id}`} >                               
+                        <MovieContainer key={movie.title}>
                             <div data-test="movie">
-                                <MovieContainer key={movie.title}>
-                                    <img src={movie.posterURL} alt={movie.title}/>
-                                </MovieContainer>
-                            </div>
-                        </Link>
-                    ))}
-                </ListContainer>
+                                <img src={movie.posterURL} alt={movie.title}/>        
+                            </div>    
+                        </MovieContainer>                           
+                    </Link>
+                ))}
             </>        
             )}
+            </ListContainer>
         </PageContainer>
     );
 }

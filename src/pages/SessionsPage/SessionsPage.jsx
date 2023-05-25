@@ -30,43 +30,39 @@ export default function SessionsPage() {
     return (
        
         <PageContainer>
-             {isLoading ? (
-                <LoadingContainer>
-                    <ReactLoading type="spinningBubbles" color="#C3CFD9" height={100} width={100}/>
-                </LoadingContainer>
-            ) : (
-            <>   
-            Selecione o horário
-            
-            {sessions.days?.map( session => (
-                    <SessionContainer key={session.date}>
-                        <div data-test="movie-day">
-                            {session.weekday} - {session.date}
-                        </div>
-                        <ButtonsContainer>
-                            {session.showtimes.map( (showtime) => (
-                                <div >
-                                    <Link key={showtime.id} to={`/assentos/${showtime.id}`} >
-                                        <button data-test="showtime">{showtime.name}</button>
-                                    </Link>
-                                </div>
-                            ))}
-                        </ButtonsContainer>
-                    </SessionContainer>
+        Selecione o horário
+        {isLoading ? (
+          <LoadingContainer>
+            <ReactLoading type="spinningBubbles" color="#C3CFD9" height={100} width={100} />
+          </LoadingContainer>
+        ) : (
+          <>
+            {sessions.days?.map((session) => (
+              <SessionContainer key={session.date}>
+                <div data-test="movie-day">
+                  {session.weekday} - {session.date}
+                </div>
+                <ButtonsContainer>
+                  {session.showtimes.map((showtime) => (
+                    <Link key={showtime.id} to={`/assentos/${showtime.id}`}>
+                      <button data-test="showtime">{showtime.name}</button>
+                    </Link>
+                  ))}
+                </ButtonsContainer>
+              </SessionContainer>
             ))}
-            <FooterContainer>
-                <div data-test="footer">
-                    <div>
+                <FooterContainer>
+                    <div data-test="footer">
                         <img src={sessions.posterURL} alt={sessions.title} />
                     </div>
-                    <div>
+                    <div data-test="footer">
                         <p>{sessions.title}</p>
                     </div>
-                </div>
-            </FooterContainer>
-            </> 
-            )}
-        </PageContainer>
+                </FooterContainer>
+          </>
+        )}
+      </PageContainer>
+      
         
     )
 }

@@ -97,22 +97,18 @@ export default function SeatsPage() {
                 </FormContainer>
 
                 <FooterContainer>
-                    <div data-test="footer">
-                        <div>
+                        <div data-test="footer">
                             <img src={seats.movie && seats.movie.posterURL} alt="poster" />
                         </div>
-                        <div>
+                        <div data-test="footer">
                             <p>{seats.movie && seats.movie.title}</p>
                             <p>
                                 {seats.movie && seats.name} - {seats.movie && seats.day.weekday}  
                             </p>
                         </div>
-                    </div>
                 </FooterContainer>  
                 </>
             )}
-
-
         </PageContainer>
     )
 }
