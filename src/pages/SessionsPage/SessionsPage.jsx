@@ -45,9 +45,9 @@ export default function SessionsPage() {
                         </div>
                         <ButtonsContainer>
                             {session.showtimes.map( (showtime) => (
-                                <div data-test="showtime">
+                                <div >
                                     <Link key={showtime.id} to={`/assentos/${showtime.id}`} >
-                                        <button>{showtime.name}</button>
+                                        <button data-test="showtime">{showtime.name}</button>
                                     </Link>
                                 </div>
                             ))}
