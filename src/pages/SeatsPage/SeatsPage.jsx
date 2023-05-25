@@ -1,19 +1,42 @@
 import styled from "styled-components"
+import { useState, useEffect } from "react"
+import axios from "axios"
+import { Link, useParams } from "react-router-dom"
+
 
 export default function SeatsPage() {
+
+    const [ seats, setSeats] = useState([]);
+
+    const { idSessao } = useParams();
+
+    useEffect (() => {
+
+        const URL = `https://mock-api.driven.com.br/api/v8/cineflex/showtimes/${idSessao}/seats`;
+
+        const seatsRequest = axios.get(URL);
+
+        seatsRequest.then((answer) => {
+            console.log(answer.data);
+            setSeats(answer.data);
+        });
+
+        seatsRequest.catch(error => console.log(error.response.data));
+        
+    }, [idSessao]);
 
     return (
         <PageContainer>
             Selecione o(s) assento(s)
-
-            <SeatsContainer>
-                <SeatItem>01</SeatItem>
-                <SeatItem>02</SeatItem>
-                <SeatItem>03</SeatItem>
-                <SeatItem>04</SeatItem>
-                <SeatItem>05</SeatItem>
-            </SeatsContainer>
-
+            
+                <SeatsContainer>
+                {seats.seats?.map( seat => (
+                    <div key={seat.name}>
+                        <SeatItem>{seat.name}</SeatItem>
+                    </div>
+                ))}
+                </SeatsContainer>
+            
             <CaptionContainer>
                 <CaptionItem>
                     <CaptionCircle />
@@ -41,11 +64,13 @@ export default function SeatsPage() {
 
             <FooterContainer>
                 <div>
-                    <img src={"https://br.web.img2.acsta.net/pictures/22/05/16/17/59/5165498.jpg"} alt="poster" />
+                    <img src={seats.movie && seats.movie.posterURL} alt="poster" />
                 </div>
                 <div>
-                    <p>Tudo em todo lugar ao mesmo tempo</p>
-                    <p>Sexta - 14h00</p>
+                    <p>{seats.movie && seats.movie.title}</p>
+                    <p>
+                        {seats.movie && seats.name} - {seats.movie && seats.day.weekday}  
+                    </p>
                 </div>
             </FooterContainer>
 
