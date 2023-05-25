@@ -1,4 +1,5 @@
 import styled from "styled-components"
+import { Link } from "react-router-dom"
 
 export default function SuccessPage() {
 
@@ -24,8 +25,7 @@ export default function SuccessPage() {
                 <p>Nome: Letícia Chijo</p>
                 <p>CPF: 123.456.789-10</p>
             </TextContainer>
-
-            <button>Voltar para Home</button>
+            <Link to="/"><button>Voltar para Home</button></Link>
         </PageContainer>
     )
 }

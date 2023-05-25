@@ -2,13 +2,20 @@ import styled from "styled-components"
 import { useState, useEffect } from "react"
 import axios from "axios"
 import { Link, useParams } from "react-router-dom"
+import ReactLoading from "react-loading"
 
 
 export default function SeatsPage() {
 
-    const [ seats, setSeats] = useState([]);
+    const [ seats, setSeats ] = useState([]);
+
+    const [ selected, setSelected ] = useState([]);
+
+    const [ isAvailable, setIsAvailable ] = useState([]);
 
     const { idSessao } = useParams();
+
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect (() => {
 
@@ -19,60 +26,90 @@ export default function SeatsPage() {
         seatsRequest.then((answer) => {
             console.log(answer.data);
             setSeats(answer.data);
+            setIsLoading(false);
         });
 
         seatsRequest.catch(error => console.log(error.response.data));
         
     }, [idSessao]);
 
+    const handleSelectedSeats = (seat) => {
+        if(seat.isAvailable) {
+            if (selected.includes(seat)) {
+                setSelected(selected.filter(selectedSeat => selectedSeat.id !== seat.id));
+            } else {
+                setSelected([...selected, seat]);
+            }
+        } else {
+            alert('Esse assento não está disponível')
+        }
+    }
+
     return (
         <PageContainer>
-            Selecione o(s) assento(s)
+            {isLoading ? (
+                <LoadingContainer>
+                    <ReactLoading type="spinningBubbles" color="#C3CFD9" height={100} width={100}/>
+                </LoadingContainer>
+            ) : (
+                <>
+                Selecione o(s) assento(s)
             
                 <SeatsContainer>
                 {seats.seats?.map( seat => (
                     <div key={seat.name}>
-                        <SeatItem>{seat.name}</SeatItem>
+                        <SeatItem 
+                        onClick={() => handleSelectedSeats(seat)}
+                        isSelected={selected.includes(seat)}
+                        isAvailable={seat.isAvailable}
+                        >
+                            <div>{seat.name}</div>
+                        </SeatItem>
                     </div>
                 ))}
                 </SeatsContainer>
             
-            <CaptionContainer>
-                <CaptionItem>
-                    <CaptionCircle />
-                    Selecionado
-                </CaptionItem>
-                <CaptionItem>
-                    <CaptionCircle />
-                    Disponível
-                </CaptionItem>
-                <CaptionItem>
-                    <CaptionCircle />
-                    Indisponível
-                </CaptionItem>
-            </CaptionContainer>
+                <CaptionContainer>
+                    <CaptionItem>
+                        <CaptionCircle isSelected />
+                        Selecionado
+                    </CaptionItem>
+                    <CaptionItem>
+                        <CaptionCircle isAvailable/>
+                        Disponível
+                    </CaptionItem>
+                    <CaptionItem>
+                        <CaptionCircle/>
+                        Indisponível
+                    </CaptionItem>
+                </CaptionContainer>
 
-            <FormContainer>
-                Nome do Comprador:
-                <input placeholder="Digite seu nome..." />
+                <FormContainer>
+                    Nome do Comprador:
+                    <input placeholder="Digite seu nome..." />
 
-                CPF do Comprador:
-                <input placeholder="Digite seu CPF..." />
+                    CPF do Comprador:
+                    <input placeholder="Digite seu CPF..." />
+                    <Link key={seats.id} to={'/sucesso'}>
+                        <button>Reservar Assento(s)</button>
+                    </Link>     
+                    
+                </FormContainer>
 
-                <button>Reservar Assento(s)</button>
-            </FormContainer>
+                <FooterContainer>
+                    <div>
+                        <img src={seats.movie && seats.movie.posterURL} alt="poster" />
+                    </div>
+                    <div>
+                        <p>{seats.movie && seats.movie.title}</p>
+                        <p>
+                            {seats.movie && seats.name} - {seats.movie && seats.day.weekday}  
+                        </p>
+                    </div>
+                </FooterContainer>
+                </>
+            )}
 
-            <FooterContainer>
-                <div>
-                    <img src={seats.movie && seats.movie.posterURL} alt="poster" />
-                </div>
-                <div>
-                    <p>{seats.movie && seats.movie.title}</p>
-                    <p>
-                        {seats.movie && seats.name} - {seats.movie && seats.day.weekday}  
-                    </p>
-                </div>
-            </FooterContainer>
 
         </PageContainer>
     )
@@ -121,8 +158,10 @@ const CaptionContainer = styled.div`
     margin: 20px;
 `
 const CaptionCircle = styled.div`
-    border: 1px solid blue;         // Essa cor deve mudar
-    background-color: lightblue;    // Essa cor deve mudar
+    border: 1px solid ${props =>
+      props.isSelected ? '#0E7D71' : props.isAvailable ? '#7B8B99' : '#F7C52B'};
+    background-color: ${props =>
+      props.isSelected ? '#1AAE9E' : props.isAvailable ? '#C3CFD9' : '#FBE192'};
     height: 25px;
     width: 25px;
     border-radius: 25px;
@@ -138,8 +177,10 @@ const CaptionItem = styled.div`
     font-size: 12px;
 `
 const SeatItem = styled.div`
-    border: 1px solid blue;         // Essa cor deve mudar
-    background-color: lightblue;    // Essa cor deve mudar
+    border: 1px solid ${props => 
+    props.isAvailable ? (props.isSelected ? '#0E7D71' : '#7B8B99') : '#F7C52B'};    
+    background-color:  ${props =>
+    props.isAvailable ? (props.isSelected ? '#1AAE9E' : '#C3CFD9') : '#FBE192'};
     height: 25px;
     width: 25px;
     border-radius: 25px;
@@ -188,3 +229,11 @@ const FooterContainer = styled.div`
         }
     }
 `
+
+const LoadingContainer = styled.div`
+  height: 500px;
+  width: 500px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;

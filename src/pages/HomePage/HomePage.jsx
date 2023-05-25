@@ -1,11 +1,14 @@
 import styled from "styled-components"
-import { useState, useEffect } from "react";
+import { useState, useEffect } from "react"
 import axios from "axios"
-import { Link } from "react-router-dom";
+import { Link } from "react-router-dom"
+import ReactLoading from 'react-loading'
 
 export default function HomePage() {
 
     const [movies, setMovies] = useState([]);
+
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect( () => {
         
@@ -13,26 +16,37 @@ export default function HomePage() {
 
         const moviesRequest = axios.get(URL);
 
-        moviesRequest.then(answer => setMovies(answer.data));        
-
-        moviesRequest.catch(error => console.log(error.response.data));
+        moviesRequest
+        .then((answer) => {
+            setMovies(answer.data);
+            setIsLoading(false);
+        })
+        .catch((error) => console.log(error.response.data));
 
     }, []);
 
     return (
         <PageContainer>
-            Selecione o filme
-            <ListContainer>
-                {movies.map(movie => (
-                    <Link key={movie.id} to={`/sessoes/${movie.id}`} >
-                        <MovieContainer key={movie.title}>
-                            <img src={movie.posterURL} alt={movie.title}/>
-                        </MovieContainer>
-                    </Link>
-                ))}
-            </ListContainer>
+            {isLoading ? (
+                <LoadingContainer>
+                    <ReactLoading type="spinningBubbles" color="#C3CFD9" height={100} width={100}/>
+                </LoadingContainer>
+            ) : (
+            <>
+                Selecione o filme
+                <ListContainer>
+                    {movies.map(movie => (
+                        <Link key={movie.id} to={`/sessoes/${movie.id}`} >
+                            <MovieContainer key={movie.title}>
+                                <img src={movie.posterURL} alt={movie.title}/>
+                            </MovieContainer>
+                        </Link>
+                    ))}
+                </ListContainer>
+            </>        
+            )}
         </PageContainer>
-    )
+    );
 }
 
 const PageContainer = styled.div`
@@ -67,3 +81,11 @@ const MovieContainer = styled.div`
         height: 190px;
     }
 `
+
+const LoadingContainer = styled.div`
+  height: 500px;
+  width: 500px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;

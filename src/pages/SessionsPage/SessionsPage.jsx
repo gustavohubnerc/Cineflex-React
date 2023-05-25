@@ -2,12 +2,15 @@ import styled from "styled-components"
 import { useState, useEffect } from "react";
 import axios from "axios"
 import { Link, useParams } from "react-router-dom";
+import ReactLoading from "react-loading"
 
 export default function SessionsPage() {
 
     const [sessions, setSessions] = useState([]);
 
     const { idFilme } = useParams();
+
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect ( () => {
         const URL = `https://mock-api.driven.com.br/api/v8/cineflex/movies/${idFilme}/showtimes`;
@@ -17,7 +20,7 @@ export default function SessionsPage() {
         sessionRequest.then((answer) => {
             console.log(answer.data);
             setSessions(answer.data);
-           
+            setIsLoading(false);          
         });
         console.log(sessions);  
         sessionRequest.catch(error => console.log(error.response.data));
@@ -27,6 +30,12 @@ export default function SessionsPage() {
     return (
        
         <PageContainer>
+             {isLoading ? (
+                <LoadingContainer>
+                    <ReactLoading type="spinningBubbles" color="#C3CFD9" height={100} width={100}/>
+                </LoadingContainer>
+            ) : (
+            <>   
             Selecione o horário
             
             {sessions.days?.map( session => (
@@ -51,6 +60,8 @@ export default function SessionsPage() {
                     <p>{sessions.title}</p>
                 </div>
             </FooterContainer>
+            </> 
+            )}
         </PageContainer>
         
     )
@@ -128,3 +139,11 @@ const FooterContainer = styled.div`
         }
     }
 `
+
+const LoadingContainer = styled.div`
+  height: 500px;
+  width: 500px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
