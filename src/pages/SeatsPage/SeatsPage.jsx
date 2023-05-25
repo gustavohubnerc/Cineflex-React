@@ -57,7 +57,7 @@ export default function SeatsPage() {
             
                 <SeatsContainer>
                 {seats.seats?.map( seat => (
-                    <div key={seat.name}>
+                    <div data-test="seat" key={seat.name}>
                         <SeatItem 
                         onClick={() => handleSelectedSeats(seat)}
                         isSelected={selected.includes(seat)}
@@ -86,27 +86,29 @@ export default function SeatsPage() {
 
                 <FormContainer>
                     Nome do Comprador:
-                    <input placeholder="Digite seu nome..." />
+                    <input data-test="client-name" placeholder="Digite seu nome..." />
 
                     CPF do Comprador:
-                    <input placeholder="Digite seu CPF..." />
+                    <input data-test="client-cpf" placeholder="Digite seu CPF..." />
                     <Link key={seats.id} to={'/sucesso'}>
-                        <button>Reservar Assento(s)</button>
+                        <button data-test="book-seat-btn">Reservar Assento(s)</button>
                     </Link>     
                     
                 </FormContainer>
 
                 <FooterContainer>
-                    <div>
-                        <img src={seats.movie && seats.movie.posterURL} alt="poster" />
+                    <div data-test="footer">
+                        <div>
+                            <img src={seats.movie && seats.movie.posterURL} alt="poster" />
+                        </div>
+                        <div>
+                            <p>{seats.movie && seats.movie.title}</p>
+                            <p>
+                                {seats.movie && seats.name} - {seats.movie && seats.day.weekday}  
+                            </p>
+                        </div>
                     </div>
-                    <div>
-                        <p>{seats.movie && seats.movie.title}</p>
-                        <p>
-                            {seats.movie && seats.name} - {seats.movie && seats.day.weekday}  
-                        </p>
-                    </div>
-                </FooterContainer>
+                </FooterContainer>  
                 </>
             )}
 

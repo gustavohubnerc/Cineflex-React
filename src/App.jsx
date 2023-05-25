@@ -48,7 +48,7 @@ function ReturnButton() {
         navigate(-1); // Navega para a página anterior
     };
 
-    return location.pathname !== '/' && <Button onClick={handleReturn}>Voltar</Button>;
+    return location.pathname !== '/' && <Button data-test="go-home-header-btn" onClick={handleReturn}>Voltar</Button>;
 }
 
 const NavContainer = styled.div`

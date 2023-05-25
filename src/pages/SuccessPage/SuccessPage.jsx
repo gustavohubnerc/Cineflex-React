@@ -25,7 +25,7 @@ export default function SuccessPage() {
                 <p>Nome: Letícia Chijo</p>
                 <p>CPF: 123.456.789-10</p>
             </TextContainer>
-            <Link to="/"><button>Voltar para Home</button></Link>
+            <Link to="/"><button data-test="go-home-btn">Voltar para Home</button></Link>
         </PageContainer>
     )
 }
