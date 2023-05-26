@@ -1,29 +1,41 @@
 import styled from "styled-components"
-import { Link } from "react-router-dom"
+import { Link, useLocation } from "react-router-dom"
 
 export default function SuccessPage() {
+
+    const location = useLocation();
+
+    const { title, date, sessionTime, ids, name, cpf } = location.state;
+
+    const cpfFormated = cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
 
     return (
         <PageContainer>
             <h1>Pedido feito <br /> com sucesso!</h1>
 
             <TextContainer>
-                <strong><p>Filme e sessão</p></strong>
-                <p>Tudo em todo lugar ao mesmo tempo</p>
-                <p>03/03/2023 - 14:00</p>
+                <div data-test="movie-info">
+                    <strong><p>Filme e sessão</p></strong>
+                    <p>{title}</p>
+                    <p>{date} - {sessionTime}</p>
+                </div>    
             </TextContainer>
 
             <TextContainer>
                 <strong><p>Ingressos</p></strong>
-                <p>Assento 01</p>
-                <p>Assento 02</p>
-                <p>Assento 03</p>
+                <div data-test="seats-info">
+                    {ids.map ( seat => (
+                        <p key={seat}>Assento {seat}</p>
+                    ))}
+                </div>
             </TextContainer>
 
             <TextContainer>
-                <strong><p>Comprador</p></strong>
-                <p>Nome: Letícia Chijo</p>
-                <p>CPF: 123.456.789-10</p>
+                <div data-test="client-info">
+                    <strong><p>Comprador</p></strong>
+                    <p>Nome: {name}</p>
+                    <p>CPF: {cpfFormated}</p>
+                </div>
             </TextContainer>
             <Link to="/"><button data-test="go-home-btn">Voltar para Home</button></Link>
         </PageContainer>

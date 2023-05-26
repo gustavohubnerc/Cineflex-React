@@ -18,11 +18,9 @@ export default function SessionsPage() {
         const sessionRequest = axios.get(URL);
 
         sessionRequest.then((answer) => {
-            console.log(answer.data);
             setSessions(answer.data);
             setIsLoading(false);          
         });
-        console.log(sessions);  
         sessionRequest.catch(error => console.log(error.response.data));
         
     }, [idFilme]);
@@ -43,7 +41,17 @@ export default function SessionsPage() {
                   {session.weekday} - {session.date}
                 <ButtonsContainer>
                   {session.showtimes.map((showtime) => (
-                    <Link key={showtime.id} to={`/assentos/${showtime.id}`}>
+                    <Link
+                     key={showtime.id}
+                     to={{
+                      pathname: `/assentos/${showtime.id}`,
+                      state: {
+                        title: sessions.title,
+                        date: session.date,
+                        sessionTime: showtime.name
+                      }
+                     }}
+                    >
                       <button data-test="showtime">{showtime.name}</button>
                     </Link>
                   ))}

@@ -1,21 +1,25 @@
 import styled from "styled-components"
 import { useState, useEffect } from "react"
 import axios from "axios"
-import { Link, useParams } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
 import ReactLoading from "react-loading"
 
 
 export default function SeatsPage() {
 
+    const navigate = useNavigate();
+
     const [ seats, setSeats ] = useState([]);
 
-    const [ selected, setSelected ] = useState([]);
-
-    const [ isAvailable, setIsAvailable ] = useState([]);
+    const [ selected, setSelected ] = useState({ seats: [], ids: [] });
 
     const { idSessao } = useParams();
 
-    const [isLoading, setIsLoading] = useState(true);
+    const [ isLoading, setIsLoading ] = useState(true);
+
+    const [ name, setName ] = useState('');
+
+    const [ cpf, setCpf ] = useState('');
 
     useEffect (() => {
 
@@ -24,7 +28,6 @@ export default function SeatsPage() {
         const seatsRequest = axios.get(URL);
 
         seatsRequest.then((answer) => {
-            console.log(answer.data);
             setSeats(answer.data);
             setIsLoading(false);
         });
@@ -34,15 +37,57 @@ export default function SeatsPage() {
     }, [idSessao]);
 
     const handleSelectedSeats = (seat) => {
-        if(seat.isAvailable) {
-            if (selected.includes(seat)) {
-                setSelected(selected.filter(selectedSeat => selectedSeat.id !== seat.id));
+        if (seat.isAvailable) {
+            if (selected.seats.includes(seat)) {
+                setSelected(prevState => ({
+                    seats: prevState.seats.filter(selectedSeat => selectedSeat.id !== seat.id),
+                    ids: prevState.ids.filter(selectedId => selectedId !== seat.id)
+                }));
             } else {
-                setSelected([...selected, seat]);
+                setSelected(prevState => ({
+                    seats: [...prevState.seats, seat],
+                    ids: [...prevState.ids, seat.id]
+                }));
             }
         } else {
-            alert('Esse assento não está disponível')
+            alert('Esse assento não está disponível');
         }
+    }
+
+    const finishRequest = (e) => {
+        e.preventDefault();
+
+        console.log(seats);
+
+        const request = {
+            ids: selected.ids, 
+            name: name, 
+            cpf: cpf,
+            title: seats.movie.title,
+            date: seats.day.date,
+            sessionTime: seats.name 
+        };
+
+        const url = "https://mock-api.driven.com.br/api/v8/cineflex/seats/book-many";
+
+        const promise = axios.post(url, request);
+
+        promise.then( answer => {
+            console.log(answer.data);
+            navigate('/sucesso', {
+                state: {
+                    title: seats.movie.title,
+                    date: seats.day.date,
+                    sessionTime: seats.name,
+                    ids: selected.ids, 
+                    name: name,
+                    cpf: cpf
+                }
+            });
+            
+        });
+        promise.catch( error => console.log(error.response.data));
+
     }
 
     return (
@@ -59,9 +104,9 @@ export default function SeatsPage() {
                 {seats.seats?.map( seat => (
                     <div data-test="seat" key={seat.name}>
                         <SeatItem 
-                        onClick={() => handleSelectedSeats(seat)}
-                        isSelected={selected.includes(seat)}
-                        isAvailable={seat.isAvailable}
+                            onClick={() => handleSelectedSeats(seat)}
+                            isSelected={selected.seats.includes(seat)}
+                            isAvailable={seat.isAvailable}
                         >
                             <div>{seat.name}</div>
                         </SeatItem>
@@ -84,16 +129,31 @@ export default function SeatsPage() {
                     </CaptionItem>
                 </CaptionContainer>
 
-                <FormContainer>
-                    Nome do Comprador:
-                    <input data-test="client-name" placeholder="Digite seu nome..." />
-
-                    CPF do Comprador:
-                    <input data-test="client-cpf" placeholder="Digite seu CPF..." />
-                    <Link key={seats.id} to={'/sucesso'}>
-                        <button data-test="book-seat-btn">Reservar Assento(s)</button>
-                    </Link>     
+                <FormContainer onSubmit={finishRequest}>
                     
+                    <label htmlFor={name}>Nome do Comprador:</label>
+                    <input 
+                        type="text" 
+                        id="name" 
+                        data-test="client-name" 
+                        placeholder="Digite seu nome..." 
+                        value={name}
+                        required
+                        onChange={(e) => setName(e.target.value)}
+                    />
+                    <label htmlFor={cpf}>CPF do Comprador:</label>
+                    <input
+                        type="number"
+                        id="cpf"
+                        pattern="\d{3}\.\d{3}\.\d{3}-\d{2}"
+                        data-test="client-cpf"
+                        placeholder="Digite seu CPF..."
+                        value={cpf}
+                        required
+                        onChange={(e) => setCpf(e.target.value)}
+                    />
+                    <button type="submit" data-test="book-seat-btn">Reservar Assento(s)</button>    
+
                 </FormContainer>
 
                 <FooterContainer>
@@ -136,7 +196,7 @@ const SeatsContainer = styled.div`
     justify-content: center;
     margin-top: 20px;
 `
-const FormContainer = styled.div`
+const FormContainer = styled.form`
     width: calc(100vw - 40px); 
     display: flex;
     flex-direction: column;
