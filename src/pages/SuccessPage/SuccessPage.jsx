@@ -9,8 +9,6 @@ export default function SuccessPage() {
 
     const cpfFormated = cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
 
-    console.log(ids);
-
     return (
         <PageContainer>
             <h1>Pedido feito <br /> com sucesso!</h1>

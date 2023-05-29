@@ -61,16 +61,10 @@ export default function SeatsPage() {
     const finishRequest = (e) => {
         e.preventDefault();
 
-        console.log(seats);
-
         const request = {
             ids: selected.ids,
             name: name, 
             cpf: cpf,
-            title: seats.movie.title,
-            date: seats.day.date,
-            sessionTime: seats.name,
-            chosen: selected.chosen,
         };
 
         const url = "https://mock-api.driven.com.br/api/v8/cineflex/seats/book-many";
@@ -84,9 +78,6 @@ export default function SeatsPage() {
                     title: seats.movie.title,
                     date: seats.day.date,
                     sessionTime: seats.name,
-                    chosenSeats: selected.name,
-                    ids: selected.ids,
-                    name: name, 
                     cpf: cpf,    
                     chosen: selected.chosen,           
                 }
