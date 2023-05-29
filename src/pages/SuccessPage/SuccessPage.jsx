@@ -5,7 +5,7 @@ export default function SuccessPage() {
 
     const location = useLocation();
 
-    const { title, date, sessionTime, ids, name, cpf, chosen } = location.state;
+    const { title, date, sessionTime, name, cpf, chosen } = location.state;
 
     const cpfFormated = cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
 

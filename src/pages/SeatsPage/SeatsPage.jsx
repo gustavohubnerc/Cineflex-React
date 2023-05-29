@@ -79,7 +79,8 @@ export default function SeatsPage() {
                     date: seats.day.date,
                     sessionTime: seats.name,
                     cpf: cpf,    
-                    chosen: selected.chosen,           
+                    chosen: selected.chosen,  
+                    name: name,         
                 }
             });
             
