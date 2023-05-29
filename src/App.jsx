@@ -5,6 +5,9 @@ import SessionsPage from "./pages/SessionsPage/SessionsPage"
 import SuccessPage from "./pages/SuccessPage/SuccessPage"
 import { BrowserRouter, Routes, Route, useNavigate, useLocation, Link } from "react-router-dom"
 import axios from "axios"
+import { IonIcon } from "@ionic/react"
+import { arrowBackOutline } from "ionicons/icons"
+
 
 export default function App() {
 
@@ -43,12 +46,18 @@ function Navigation() {
 function ReturnButton() {
     const navigate = useNavigate();
     const location = useLocation();
-
+  
     const handleReturn = () => {
-        navigate(-1); // Navega para a página anterior
+      navigate(-1);
     };
-
-    return location.pathname !== '/' && <Button data-test="go-home-header-btn" onClick={handleReturn}>Voltar</Button>;
+  
+    return (
+      location.pathname !== "/" && (
+        <Button data-test="go-home-header-btn" onClick={handleReturn}>
+          <IonIcon icon={arrowBackOutline} />
+        </Button>
+      )
+    );
 }
 
 const NavContainer = styled.div`
@@ -70,15 +79,14 @@ const NavContainer = styled.div`
 `
 
 const Button = styled.button`
-    width: 70px;
-    height: 70px;
+    width: 60px;
+    height: 60px;
     background-color: #E8833A;
     color: #C3CFD9;
-    font-family: 'Roboto', sans-serif;
-    font-size: 24px;
+    border-radius: 50px;
     border: none;
     position: fixed;
-    top: 0;
-    left: 0;
+    top: 5px;
+    left: 5px;
     z-index: 1;
 `

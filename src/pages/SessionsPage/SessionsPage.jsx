@@ -1,7 +1,7 @@
 import styled from "styled-components"
-import { useState, useEffect } from "react";
+import { useState, useEffect } from "react"
 import axios from "axios"
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom"
 import ReactLoading from "react-loading"
 
 export default function SessionsPage() {
