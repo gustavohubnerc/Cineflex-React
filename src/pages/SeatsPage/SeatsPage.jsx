@@ -11,7 +11,7 @@ export default function SeatsPage() {
 
     const [ seats, setSeats ] = useState([]);
 
-    const [ selected, setSelected ] = useState({ seats: [], ids: [] });
+    const [ selected, setSelected ] = useState({ seats: [], ids: [], chosen: [] });
 
     const { idSessao } = useParams();
 
@@ -41,12 +41,16 @@ export default function SeatsPage() {
             if (selected.seats.includes(seat)) {
                 setSelected(prevState => ({
                     seats: prevState.seats.filter(selectedSeat => selectedSeat.id !== seat.id),
-                    ids: prevState.ids.filter(selectedId => selectedId !== seat.id)
+                    ids: prevState.ids.filter(selectedId => selectedId !== seat.id),
+                    chosen: prevState.chosen.filter(selectedName => selectedName !== seat.name),
+
                 }));
             } else {
                 setSelected(prevState => ({
                     seats: [...prevState.seats, seat],
-                    ids: [...prevState.ids, seat.id]
+                    ids: [...prevState.ids, seat.id],
+                    chosen: [...prevState.chosen, seat.name]
+
                 }));
             }
         } else {
@@ -60,12 +64,13 @@ export default function SeatsPage() {
         console.log(seats);
 
         const request = {
-            ids: selected.ids, 
+            ids: selected.ids,
             name: name, 
             cpf: cpf,
             title: seats.movie.title,
             date: seats.day.date,
-            sessionTime: seats.name 
+            sessionTime: seats.name,
+            chosen: selected.chosen,
         };
 
         const url = "https://mock-api.driven.com.br/api/v8/cineflex/seats/book-many";
@@ -79,9 +84,11 @@ export default function SeatsPage() {
                     title: seats.movie.title,
                     date: seats.day.date,
                     sessionTime: seats.name,
-                    ids: selected.ids, 
-                    name: name,
-                    cpf: cpf
+                    chosenSeats: selected.name,
+                    ids: selected.ids,
+                    name: name, 
+                    cpf: cpf,    
+                    chosen: selected.chosen,           
                 }
             });
             
